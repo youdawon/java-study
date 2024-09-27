@@ -34,8 +34,53 @@ import java.util.TreeMap;
 
 public class Adyen {
 
-	public static TreeMap<Long, Card> binCache = new TreeMap<>();
-	public static int BIN_LENGTH = 10;
+	static TreeMap<String, Card> binInfo = new TreeMap<>();
+
+	static class Card{
+		String start;
+		String end;
+		String type;
+
+		Card(String start, String end, String type){
+			this.start = start;
+			this.end = end;
+			this.type = type;
+		}
+	}
+
+	public static void addBinInfo(String[][] binRanges) {
+
+		for(int i=0; i<binRanges.length; i++){
+			String start = binRanges[i][0]
+				.replace(" ", "")
+				.substring(0, 10);
+			String end = binRanges[i][1]
+				.replace(" ", "")
+				.substring(0, 10);
+			String type = binRanges[i][2];
+			binInfo.put(start, new Card(start, end, type));
+		}
+	}
+
+	public static String getCardType(String currCard){
+		currCard = currCard
+			.replace(" ", "")
+			.substring(0, 10);
+
+		Map.Entry<String, Card> bin = binInfo.floorEntry(currCard);
+
+		if(bin != null){
+			Card card = bin.getValue();
+
+			if(currCard.compareTo(card.start) >= 0 &&
+			currCard.compareTo(card.end) <= 0){
+				return card.type;
+			}
+		}
+
+
+		return null;
+	}
 
 	public static void main(String[] args){
 		String[][] binRanges =  {
@@ -45,61 +90,11 @@ public class Adyen {
 			{"6666 4444 11", "7777 0000 00", "Amex"}
 		};
 
+		addBinInfo(binRanges);
 		String currCard = "4733 6109 7901 2139";;
+		System.out.println(getCardType(currCard));
 
-		addCardInfo(binRanges);
-		assert(findCardType(currCard).equals("Visa debit"));
-		System.out.println(findCardType(currCard).equals("Visa debit"));
 	}
 
-	static class Card{
 
-		private String start;
-		private String end;
-		private String cardType;
-
-		public Card(String start, String end, String cardType){
-			this.start = start;
-			this.end = end;
-			this.cardType = cardType;
-		}
-
-		public String getStart(){
-			return this.start;
-		}
-		public String getEnd(){
-			return this.end;
-		}
-		public String getCardType(){
-			return this.cardType;
-		}
-	}
-
-	public static void addCardInfo(String[][] binRanges){
-
-		for(String[] binRange : binRanges) {
-			String start = binRange[0].replace(" ", "");
-			String end = binRange[1].replace(" ", "");
-			String cardType = binRange[2];
-
-			binCache.put(Long.parseLong(start), new Card(start, end, cardType));
-		}
-	}
-
-	public static String findCardType(String currCardNum){
-		Long currNumber = Long.parseLong(currCardNum.replace(" ", "").substring(0, BIN_LENGTH));
-
-		Map.Entry<Long, Card> ceilValue = binCache.floorEntry(currNumber);
-		if(ceilValue != null){
-			Card compareCard = ceilValue.getValue();
-			return compareRange(currCardNum, compareCard);
-		}
-		return null;
-	}
-
-    public static String compareRange(String currCardNum, Card compareCard){
-		if (currCardNum.compareTo(compareCard.getStart()) >= 0 && currCardNum.compareTo(compareCard.getEnd()) <= 0)
-			return compareCard.getCardType();
-		return null;
-	}
 }
