@@ -1,4 +1,4 @@
-package algorithm;
+package algorithm.dp;
 
 /**
  * Here’s an overview and example problem for the **0/1 Knapsack Problem**:
