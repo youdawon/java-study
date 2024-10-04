@@ -1,13 +1,15 @@
 package design.bank;
 
-public abstract class BankAccount {
+public abstract class BankAccount implements BankAccountInterface{
 
+	private Long accountId;
 	private String firstName;
 	private String lastName;
 	private int pinNumber;
 	private double balance;
 
-	public BankAccount(String firstName, String lastName, int pinNumber, double amount) {
+	public BankAccount(Long accountId, String firstName, String lastName, int pinNumber, double amount) {
+		this.accountId = accountId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.pinNumber = pinNumber;
@@ -39,5 +41,9 @@ public abstract class BankAccount {
 
 	public String getLastName(){
 		return this.lastName;
+	}
+
+	public Long getAccountId(){
+		return this.accountId;
 	}
 }

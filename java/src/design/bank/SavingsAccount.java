@@ -14,10 +14,12 @@ package design.bank;
 public class SavingsAccount extends BankAccount{
 
 	private double interestRate;
+	private Transaction transaction;
 
-	public SavingsAccount(String firstName, String lastName, int pinNumber, double amount, double interestRate) {
-		super(firstName, lastName, pinNumber, amount);
+	public SavingsAccount(Long accountId, String firstName, String lastName, int pinNumber, double amount, double interestRate, Transaction transaction) {
+		super(accountId, firstName, lastName, pinNumber, amount);
 		this.interestRate = interestRate;
+		this.transaction = transaction;
 	}
 
 	public void setInterestRate(double interestRate){
@@ -29,7 +31,10 @@ public class SavingsAccount extends BankAccount{
 	}
 
 	public void applyInterest(){
-		double interest = getBalance() * this.interestRate;
-		deposit(interest);
+		double interest = getBalance() * (this.interestRate / 100);
+		synchronized (this) {
+			deposit(interest);
+		}
+		transaction.updateTransactionHistory(getAccountId(), "applyInterest", interest, getBalance());
 	}
 }
