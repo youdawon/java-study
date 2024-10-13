@@ -1,4 +1,4 @@
-package main.stream;
+package stream;
 
 public class Button {
 

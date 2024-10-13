@@ -1,4 +1,4 @@
-package main.stream;
+package stream;
 
 import java.util.ArrayList;
 import java.util.Arrays;

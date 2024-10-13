@@ -1,4 +1,4 @@
-package main.stream;
+package stream;
 
 import java.time.LocalTime;
 import java.util.Scanner;
