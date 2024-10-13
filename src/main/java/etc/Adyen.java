@@ -1,4 +1,4 @@
-package main.etc;
+package etc;
 
 import java.util.Comparator;
 import java.util.Map;
