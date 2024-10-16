@@ -1,8 +1,7 @@
 package concurrency;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 /**
  * 문제 1: CountDownLatch 문제
  * 한 웹 애플리케이션에서는 초기화 작업으로 여러 서버에 데이터를 동기화해야 합니다.
@@ -17,14 +16,37 @@ import java.util.concurrent.Executors;
  * 초기화 완료 후 "Service is now ready" 메시지를 출력합니다.
  * 서버 초기화는 각기 다른 시간이 소요되며, 이를 시뮬레이션하기 위해 Thread.sleep()을 사용합니다.
  */
-public class CountDownLatch {
+public class CountDownLatch2 {
+
+  public static Runnable createServerTask(int initializationTime, CountDownLatch countDownLatch) {
+    return () -> {
+      try {
+        String serverName = Thread.currentThread().getName();
+        System.out.println(serverName + " started initialization.");
+        Thread.sleep(initializationTime);
+        System.out.println(serverName + " completed initialization.");
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } finally {
+        countDownLatch.countDown();
+      }
+    };
+  }
 
   public static void main(String[] args){
 
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
+    CountDownLatch countDownLatch = new CountDownLatch(3);
 
-    executorService.execute(() -> {
+    new Thread(createServerTask(1000, countDownLatch)).start();
+    new Thread(createServerTask(5000, countDownLatch)).start();
+    new Thread(createServerTask(3000, countDownLatch)).start();
 
-    });
+    try {
+      countDownLatch.await();
+      System.out.println("Service is now ready");
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      System.out.println("Service initialization was interrupted.");
+    }
   }
 }

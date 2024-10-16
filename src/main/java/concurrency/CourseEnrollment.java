@@ -3,6 +3,8 @@ package concurrency;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -44,7 +46,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  getStudentCount, enrollStudent, 또는 cancelEnrollment 메서드가 해당 과목 ID를 자동으로 추가하고
  초기 수강생 수를 0으로 설정하도록 만들어 보세요.
  */
-public class Library {
+public class CourseEnrollment {
 
   Map<String, Integer> students = new ConcurrentHashMap<>();
   ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -52,7 +54,7 @@ public class Library {
   public int getStudentCount(String id) {
     try {
       lock.readLock().lock();
-      return students.put(id, students.getOrDefault(id, 0));
+      return students.getOrDefault(id, 0);
     } finally {
       lock.readLock().unlock();
     }
@@ -88,5 +90,34 @@ public class Library {
     } finally {
       lock.writeLock().unlock();
     }
+  }
+  public static void main(String[] args) throws InterruptedException {
+    CourseEnrollment enrollmentSystem = new CourseEnrollment();
+    enrollmentSystem.enrollStudent("course1"); // 초기 수강생 등록
+
+    // 스레드 풀 생성
+    ExecutorService executor = Executors.newFixedThreadPool(5);
+
+    // 다수의 읽기 스레드 생성
+    for (int i = 0; i < 3; i++) {
+      executor.submit(() -> {
+        System.out.println("Current count for course1: " + enrollmentSystem.getStudentCount("course1"));
+      });
+    }
+
+    // 수강 신청 스레드 생성 (동시에 시도하여 타임아웃 발생 가능성 확인)
+    executor.submit(() -> {
+      enrollmentSystem.enrollStudent("course1");
+    });
+
+    // 수강 취소 스레드 생성 (동시에 시도하여 타임아웃 발생 가능성 확인)
+    executor.submit(() -> {
+      enrollmentSystem.cancelEnrollment("course1");
+    });
+
+    // ExecutorService 종료
+    executor.shutdown();
+    executor.awaitTermination(5, TimeUnit.SECONDS);
+    System.out.println("All tasks completed.");
   }
 }
