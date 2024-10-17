@@ -1,15 +1,15 @@
-package designPattern.coffeemaker.strategy;
+package designpattern.coffeemaker.strategy;
 
-public class LatteStrategy implements ReceipeStrategy{
+public class AmericanoStrategy implements ReceipeStrategy{
 
   @Override
   public int getWater() {
-    return 2;
+    return 3;
   }
 
   @Override
   public int getMilk() {
-    return 2;
+    return 0;
   }
 
   @Override

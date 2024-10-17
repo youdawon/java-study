@@ -1,6 +1,6 @@
-package designPattern.coffeemaker;
+package designpattern.coffeemaker;
 
-import designPattern.coffeemaker.strategy.ReceipeStrategy;
+import designpattern.coffeemaker.strategy.ReceipeStrategy;
 
 public class Drink {
 

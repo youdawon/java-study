@@ -1,4 +1,4 @@
-package designPattern.coffeemaker.strategy;
+package designpattern.coffeemaker.strategy;
 
 public interface ReceipeStrategy {
   public int getWater();

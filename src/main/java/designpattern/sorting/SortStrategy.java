@@ -1,4 +1,4 @@
-package designPattern.sorting;
+package designpattern.sorting;
 
 public interface SortStrategy {
 

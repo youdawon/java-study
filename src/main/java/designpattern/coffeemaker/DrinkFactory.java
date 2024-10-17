@@ -1,9 +1,8 @@
-package designPattern.coffeemaker;
+package designpattern.coffeemaker;
 
-import designPattern.coffeemaker.strategy.AmericanoStrategy;
-import designPattern.coffeemaker.strategy.EspressoStrategy;
-import designPattern.coffeemaker.strategy.LatteStrategy;
-import designPattern.coffeemaker.strategy.ReceipeStrategy;
+import designpattern.coffeemaker.strategy.AmericanoStrategy;
+import designpattern.coffeemaker.strategy.EspressoStrategy;
+import designpattern.coffeemaker.strategy.LatteStrategy;
 
 public class DrinkFactory {
 

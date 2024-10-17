@@ -1,4 +1,4 @@
-package designPattern.coffeemaker.strategy;
+package designpattern.coffeemaker.strategy;
 
 public class EspressoStrategy implements ReceipeStrategy{
 
